@@ -1,5 +1,29 @@
+# -*- coding=utf-8 -*-
 import tensorflow as tf
 
+class Metrics:
+    @staticmethod
+    def dice_score(y_true, y_pred, axis=[1, 2], smooth=1.0):
+        '''
+        计算dice_score=(2*np.sum(y_true, y_pred)) / (np.sum(y_true) + np.sum(y_pred))
+        :param y_true: not one hot format
+        :param axis:
+        :param y_pred: not one hot format
+        :param smooth:
+        :return:
+        '''
+        with tf.name_scope('dice'):
+            output = tf.cast(y_true, tf.float32)
+            target = tf.cast(y_pred, tf.float32)
+            inse = tf.reduce_sum(output * target, axis=axis)
+            l = tf.reduce_sum(output, axis=axis)
+            r = tf.reduce_sum(target, axis=axis)
+            dice = (2. * inse + smooth) / (l + r + smooth)
+            dice = tf.reduce_mean(dice)
+        return dice
+    @staticmethod
+    def dice_loss(y_true, y_pred, smooth=1.0):
+        return 1.0 - Metrics.dice_score(y_true, y_pred, smooth=smooth)
 
 def get_weights(name, shape, initializer):
     return tf.get_variable(name, dtype=tf.float32, shape=shape, initializer=initializer)
@@ -121,8 +145,8 @@ def unet_model(input_tensor, categories_num=2):
 
     sg_predict = do_conv(conv1_4, layer_name='level1-conv1_5', kernel_size=[1, 1], filter_size=categories_num, stride_size=[1, 1],
                          padding='SAME', activation_method=tf.nn.relu)
-    sg_predict = do_conv(sg_predict, layer_name='level1-conv1_6', kernel_size=[1, 1], filter_size=1, stride_size=[1, 1],
-                         padding='SAME', activation_method=tf.nn.sigmoid)
+    # sg_predict = do_conv(sg_predict, layer_name='level1-conv1_6', kernel_size=[1, 1], filter_size=1, stride_size=[1, 1],
+    #                      padding='SAME', activation_method=tf.nn.sigmoid)
     return sg_predict
 
 if __name__ == '__main__':

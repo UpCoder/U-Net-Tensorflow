@@ -1,0 +1,4 @@
+model_checkpoint_path: "/home/give/PycharmProjects/unet/tf_version/parameters-201"
+all_model_checkpoint_paths: "/home/give/PycharmProjects/unet/tf_version/parameters-1"
+all_model_checkpoint_paths: "/home/give/PycharmProjects/unet/tf_version/parameters-101"
+all_model_checkpoint_paths: "/home/give/PycharmProjects/unet/tf_version/parameters-201"
